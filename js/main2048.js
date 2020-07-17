@@ -4,12 +4,49 @@ var score = 0 ;
 //hasConflicted 二维数组记录是否已经发生过一个add
 var hasConflicted = new Array();
 
+//手机端的处理:采用对于手机屏幕的百分比
+//获取手机屏幕宽度
+var documentWidth = window.screen.availWidth;
+//设定是92%大格子
+var gridContainerWidth = 0.92 * documentWidth;
+//小方块是18%小格子
+var cellSideLength = 0.18 * documentWidth;
+//小方块之间的边距
+var cellSpace = 0.04 * documentWidth;
+
+var startx = 0 ;
+var starty = 0 ;
+var endx = 0;
+var endy =0 ;
+
+
+
 // 当整个程序加载完毕
 $(document).ready(function () {
+    //手机端开始之前需要的准备工作
+    prepareForMoblie();
     //开始新游戏
     newgame();
 
 });
+
+function prepareForMoblie(){
+
+    if( window.screen.availWidth > 500 ) {
+        gridContainerWidth = 500 ;
+        cellSpace = 20;
+        cellSideLength = 100;
+    }
+    //对grid-container的css进行调整
+    $('#grid-container').css('width',gridContainerWidth - 2*cellSpace);
+    $('#grid-container').css('height',gridContainerWidth - 2*cellSpace);
+    $('#grid-container').css('padding',cellSpace);
+    $('#grid-container').css('border-radius',0.02 * gridContainerWidth);
+
+    $('.grid-cell').css('width',cellSideLength);
+    $('.grid-cell').css('height',cellSideLength);
+    $('.grid-cell').css('border-radius',0.02 * cellSideLength);
+}
 
 //开始新的游戏->清零、初始化、随机出现
 function newgame() {
@@ -73,11 +110,11 @@ function updateBoardView() {
                 theNumberCell.css('width','0px');
                 theNumberCell.css('height','0px');
                 //位置放在小格子的中间
-                theNumberCell.css('top',getPosTop(i, j) + 50);
-                theNumberCell.css('left',getPosLeft(i, j) + 50);
+                theNumberCell.css('top',getPosTop(i, j) + cellSideLength/2);
+                theNumberCell.css('left',getPosLeft(i, j) + cellSideLength/2);
             }else{
-                theNumberCell.css('width','100px');
-                theNumberCell.css('height','100px');
+                theNumberCell.css('width',cellSideLength);
+                theNumberCell.css('height',cellSideLength);
                 //把grid-cell 覆盖住
                 theNumberCell.css('top',getPosTop(i, j) );
                 theNumberCell.css('left',getPosLeft(i, j) );
@@ -93,6 +130,9 @@ function updateBoardView() {
             hasConflicted[i][j] = false;
         }
     }
+
+    $('.number-cell').css('line-height',cellSideLength+"px");
+    $('.number-cell').css('font-size',0.6 * cellSideLength + 'px');
 }
 
 function generateOneNumber() {
@@ -137,6 +177,8 @@ function generateOneNumber() {
 $(document).keydown(function(event){
    switch(event.keyCode){
        case 37 : //left
+            //按键的默认效果都消失
+            event.preventDafault();
            //判断是否真的能向左移动，如果所有数据都在左边则应该无法移动
            if(moveLeft()){
                //更新面板
@@ -146,6 +188,8 @@ $(document).keydown(function(event){
            }
            break;
        case 38 : //up
+            //按键的默认效果都消失
+            event.preventDafault();
            if(moveUp()){
                //更新面板
                setTimeout("generateOneNumber()",210);
@@ -154,6 +198,8 @@ $(document).keydown(function(event){
            }
            break;
        case 39 : //right
+            //按键的默认效果都消失
+            event.preventDafault();
            if(moveRight()){
                //更新面板
                setTimeout("generateOneNumber()",210);
@@ -162,6 +208,8 @@ $(document).keydown(function(event){
            }
            break;
        case 40 : //down
+            //按键的默认效果都消失
+            event.preventDafault();
            if(moveDown()){
                //更新面板
                setTimeout("generateOneNumber()",210);
@@ -173,6 +221,77 @@ $(document).keydown(function(event){
            break;
    }
 });
+
+document.addEventListener('touchstart',function(event){
+    startx=event.touches[0].pageX; 
+    starty=event.touches[0].pageY;
+
+});
+
+document.addEventListener('touchmove',function(event)）{
+    event.preventDafault();
+}
+
+document.addEventListener('touchend',function(event){
+    endx=event.changedTouches[0].pageX;
+    endy=event.changedTouches[0].pageY;
+
+     //记录这个向量，判断正负以此来判断左右
+     var deltax = endx-startx;
+     var deltay = endy-starty;
+
+     //判断用户是点击还是滑动
+     if(Math.abs(deltax) < 0.3 * documentWidth && Math.abs(deltay) < 0.3 * documentWidth){
+        return;
+     }
+
+     //x
+     if(Math.abs(deltax) >= Math.abs(deltay)){
+        //x>0 向右
+        if(deltax > 0){
+              if(moveRight()){
+               //更新面板
+               setTimeout("generateOneNumber()",210);
+               //游戏是否结束
+               setTimeout("isgameover()",300);
+           }
+        }
+        //向左
+        else{
+              if(moveLeft()){
+               //更新面板
+               setTimeout("generateOneNumber()",210);
+               //游戏是否结束
+               setTimeout("isgameover()",300);
+           }
+        }
+     }
+     //y
+     else{
+        //向下
+        if(deltay > 0){
+           if(moveDown()){
+               //更新面板
+               setTimeout("generateOneNumber()",210);
+               //游戏是否结束
+               setTimeout("isgameover()",300);
+           }
+        }
+        //向上
+        else{
+            if(moveUp()){
+               //更新面板
+               setTimeout("generateOneNumber()",210);
+               //游戏是否结束
+               setTimeout("isgameover()",300);
+           }
+        }
+
+     }
+});
+
+
+
 function isgameover() {
     //游戏没有空格且没有游戏空间
     if(nospace(board) && noMove(board)){

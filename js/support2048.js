@@ -1,9 +1,22 @@
+//手机端的处理:采用对于手机屏幕的百分比
+//获取手机屏幕宽度
+documentWidth = window.screen.availWidth;
+//设定是92%大格子
+gridContainerWidth = 0.92 * documentWidth;
+//小方块是18%小格子
+cellSideLength = 0.18 * documentWidth;
+//小方块之间的边距
+cellSpace = 0.04 * documentWidth;
+
+
+
+
 // 对位置的处理
 function  getPosTop(i,j) {
-    return 20 + i * 120;
+    return cellSpace + i * (cellSpace+cellSideLength);
 }
 function  getPosLeft(i,j) {
-    return 20 + j * 120;
+    return cellSpace + j * (cellSpace+cellSideLength);
 }
 //对小格子背景色的处理
 function getNumberBackgroundColor(number) {

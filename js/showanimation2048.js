@@ -8,8 +8,8 @@ function showNumberWhitAnimation(i,j,randNumber){
 
     //动画部分 animate渐变
     numberCell.animate({
-        width:"100px",
-        height:"100px",
+        width:cellSideLength,
+        height:cellSideLength,
         top:getPosTop(i,j),
         left:getPosLeft(i,j)
     },50) //50代表50毫秒
