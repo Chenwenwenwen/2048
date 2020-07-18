@@ -1,3 +1,7 @@
+/*设置全局css*/
+* { 
+    touch-action: pan-y; 
+}
 /*-----------------标题----------------------*/
 header{
     display:block;

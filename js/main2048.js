@@ -132,7 +132,7 @@ function updateBoardView() {
     }
 
     $('.number-cell').css('line-height',cellSideLength+"px");
-    $('.number-cell').css('font-size',0.6 * cellSideLength + 'px');
+    $('.number-cell').css('font-size',0.4 * cellSideLength + 'px');
 }
 
 function generateOneNumber() {
@@ -178,7 +178,7 @@ $(document).keydown(function(event){
    switch(event.keyCode){
        case 37 : //left
             //按键的默认效果都消失
-            event.preventDafault();
+            event.preventDefault();
            //判断是否真的能向左移动，如果所有数据都在左边则应该无法移动
            if(moveLeft()){
                //更新面板
@@ -189,7 +189,7 @@ $(document).keydown(function(event){
            break;
        case 38 : //up
             //按键的默认效果都消失
-            event.preventDafault();
+            event.preventDefault();
            if(moveUp()){
                //更新面板
                setTimeout("generateOneNumber()",210);
@@ -199,7 +199,7 @@ $(document).keydown(function(event){
            break;
        case 39 : //right
             //按键的默认效果都消失
-            event.preventDafault();
+            event.preventDefault();
            if(moveRight()){
                //更新面板
                setTimeout("generateOneNumber()",210);
@@ -209,7 +209,7 @@ $(document).keydown(function(event){
            break;
        case 40 : //down
             //按键的默认效果都消失
-            event.preventDafault();
+            event.preventDefault();
            if(moveDown()){
                //更新面板
                setTimeout("generateOneNumber()",210);
@@ -229,7 +229,7 @@ document.addEventListener('touchstart',function(event){
 });
 
 document.addEventListener('touchmove',function(event){
-    event.preventDafault();
+   event.preventDefault();
 });
 
 document.addEventListener('touchend',function(event){
